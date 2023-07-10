@@ -2,14 +2,20 @@ class Produto {
 
     constructor() {
         this.id = 1;
-        this.arrayProdutos = []
+        this.arrayProdutos = [];
+        this.editId = null;
     }
 
     salvar() {
         let produto = this.lerDados();
 
         if(this.validaCampos(produto)) {
-            this.adicionar(produto);
+            if(this.editId == null) {
+                this.adicionar(produto);
+            } else {
+                this.atualizar(this.editId, produto);
+            }
+
         }
 
         this.listaTabela();
@@ -36,6 +42,8 @@ class Produto {
             let imgEdit = document.createElement("img");
             imgEdit.src = "img/edit.svg";
             td_acoes.appendChild(imgEdit);
+            imgEdit.setAttribute("onclick", "produto.preparaEdicao(" + JSON.stringify(this.arrayProdutos[i]) +")");
+
 
             
             let imgDelete = document.createElement("img");
@@ -48,9 +56,29 @@ class Produto {
     }
 
     adicionar(produto) {
+        produto.preco = parseFloat(produto.preco);
+
         this.arrayProdutos.push(produto);
         this.id++;
+    }
 
+    atualizar(id, produto) {
+        for (let i = 0; i < this.arrayProdutos.length; i++) {
+            if(this.arrayProdutos[i].id == id) {
+                this.arrayProdutos[i].nomeProduto = produto.nomeProduto;
+                this.arrayProdutos[i].preco = produto.preco;
+            }
+            
+        }
+    }
+
+    preparaEdicao(dados) {
+        this.editId = dados.id;
+
+        document.getElementById("produto").value = dados.nomeProduto;
+        document.getElementById("preco").value = dados.preco;
+
+        document.getElementById("btn1").innerText = "Atualizar";
     }
 
     lerDados() {
@@ -86,6 +114,10 @@ class Produto {
     cancelar() {
         document.getElementById("produto").value = "";
         document.getElementById("preco").value = "";
+
+        document.getElementById("btn1").innerText = "Salvar";
+
+        this.editId = null;
     }
 
     deletar(id) {
