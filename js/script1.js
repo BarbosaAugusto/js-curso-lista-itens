@@ -4,6 +4,8 @@ class Produto {
         this.id = 1;
         this.arrayProdutos = [];
         this.editId = null;
+        this.carregarDados();
+        this.listaTabela();
     }
 
     salvar() {
@@ -17,14 +19,17 @@ class Produto {
             }
 
         }
-
+        
         this.listaTabela();
+        this.salvarDados();
         this.cancelar();
+
     }
 
     listaTabela() {
         let tbody = document.getElementById("tbody");
         tbody.innerText = "";
+        
         for(let i = 0; i < this.arrayProdutos.length; i++) {
             let tr = tbody.insertRow();
 
@@ -121,19 +126,40 @@ class Produto {
     }
 
     deletar(id) {
-
-        if(confirm("Deseja realmente deletar o produto do ID " + id + "?")) {
-            
+        if (confirm("Deseja realmente deletar o produto do ID " + id + "?")) {
+            let data = JSON.parse(localStorage.getItem("produtos"));
             let tbody = document.getElementById("tbody");
     
-           for(let i = 0; i < this.arrayProdutos.length; i++) {
-            if(this.arrayProdutos[i].id == id) {
-                this.arrayProdutos.splice(i, 1);
-                tbody.deleteRow(i);
+            for (let i = 0; i < this.arrayProdutos.length; i++) {
+                if (this.arrayProdutos[i].id == id) {
+                    this.arrayProdutos.splice(i, 1);
+                    tbody.deleteRow(i);
+    
+                    // Localizar o objeto correspondente no localStorage
+                    let index = data.findIndex(item => item.id == id);
+                    if (index > -1) {
+                        data.splice(index, 1);
+                    }
+    
+                    // Atualizar o valor do array no localStorage
+                    localStorage.setItem("produtos", JSON.stringify(data));
+                }
             }
-           }
         }
     }
+    
+
+    salvarDados() {
+        localStorage.setItem("produtos", JSON.stringify(this.arrayProdutos));
+    }
+
+    carregarDados() {
+        const data = localStorage.getItem("produtos");
+        if (data) {
+          this.arrayProdutos = JSON.parse(data);
+          this.id = this.arrayProdutos.length > 0 ? this.arrayProdutos[this.arrayProdutos.length - 1].id + 1 : 1;
+        }
+      }
 }
 
 var produto = new Produto();
