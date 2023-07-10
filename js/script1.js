@@ -90,14 +90,17 @@ class Produto {
 
     deletar(id) {
 
-        let tbody = document.getElementById("tbody");
-
-       for(let i = 0; i < this.arrayProdutos.length; i++) {
-        if(this.arrayProdutos[i].id == id) {
-            this.arrayProdutos.splice(i, 1);
-            tbody.deleteRow(i);
+        if(confirm("Deseja realmente deletar o produto do ID " + id + "?")) {
+            
+            let tbody = document.getElementById("tbody");
+    
+           for(let i = 0; i < this.arrayProdutos.length; i++) {
+            if(this.arrayProdutos[i].id == id) {
+                this.arrayProdutos.splice(i, 1);
+                tbody.deleteRow(i);
+            }
+           }
         }
-       }
     }
 }
 
